@@ -7,6 +7,8 @@ dependencies:
 
 - pandas
 - numpy
+- bs4
+- requests
 - ipywidgets
 - matplotlib=3.2.2
 - bqplot=0.12.30
