@@ -11,4 +11,4 @@ dependencies:
 - requests
 - ipywidgets
 - matplotlib=3.2.2
-- bqplot=0.12.30s
+- bqplot=0.12.30
