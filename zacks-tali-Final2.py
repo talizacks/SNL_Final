@@ -57,7 +57,7 @@ imdb_name_list = imdb_names_df.values.tolist()
 imdb_names_df.columns.tolist()
 
 
-# In[ ]:
+# In[9]:
 
 
 cross_imdb_wiki_list = []
@@ -66,14 +66,14 @@ for person in imdb_name_list:
         cross_imdb_wiki_list.append(person)
 
 
-# In[ ]:
+# In[10]:
 
 
 cross_name_list = (set([r[1] for r in cross_imdb_wiki_list]))
 len(cross_name_list) # <- Missing 2 cast members
 
 
-# In[ ]:
+# In[11]:
 
 
 from collections import Counter
@@ -81,13 +81,13 @@ from collections import Counter
 Counter([r[1] for r in cross_imdb_wiki_list]).most_common(10)
 
 
-# In[ ]:
+# In[12]:
 
 
 cross_imdb_wiki_list
 
 
-# In[ ]:
+# In[13]:
 
 
 def check_names(name):
@@ -101,7 +101,7 @@ SNL_name_check = [r for r in cross_imdb_wiki_list if check_names(r[1])]
 (SNL_name_check)
 
 
-# In[ ]:
+# In[14]:
 
 
 def check_creds(works):
@@ -115,14 +115,14 @@ SNL_cred_check = [r for r in cross_imdb_wiki_list if check_creds(r[5])]
 (SNL_cred_check)
 
 
-# In[ ]:
+# In[15]:
 
 
 SNL_df = pd.DataFrame(SNL_cred_check, columns = imdb_names.columns.tolist()).set_index('primaryName')
 SNL_df
 
 
-# In[ ]:
+# In[16]:
 
 
 wiki_cast = wiki_cast.set_index('Performer')
@@ -130,14 +130,14 @@ imdb_wiki_table = pd.concat([SNL_df, wiki_cast], axis=1, join="outer")
 imdb_wiki_table
 
 
-# In[ ]:
+# In[17]:
 
 
 names_title_dict = {item[1]:item[5].split(',') for item in SNL_name_check}
 names_title_dict
 
 
-# In[ ]:
+# In[18]:
 
 
 for i in SNL_name_check:
@@ -154,7 +154,7 @@ for name, titles in names_title_dict.items():
 names_title_dict
 
 
-# In[ ]:
+# In[19]:
 
 
 import csv
@@ -173,7 +173,7 @@ with open('snl_name_title_nodes.csv', 'w', encoding = 'utf-8') as outfile:
 
 # # Visualizations
 
-# In[ ]:
+# In[20]:
 
 
 import pygraphviz as pgv
@@ -192,14 +192,14 @@ G.draw('name_to_titles.png')
 G.draw('name_to_titles.svg')
 
 
-# In[ ]:
+# In[21]:
 
 
 from IPython import display
 display.Image('name_to_titles.png')
 
 
-# In[ ]:
+# In[22]:
 
 
 same_title_dict = {}
@@ -231,7 +231,7 @@ for title in same_title_dict:
 same_title_dict
 
 
-# In[ ]:
+# In[23]:
 
 
 G = pgv.AGraph(same_title_dict,
@@ -248,38 +248,39 @@ G.draw('title_to_names.png')
 G.draw('title_to_names.svg')
 
 
-# In[ ]:
+# In[24]:
 
 
 display.Image('title_to_names.png')
 
 
-# In[ ]:
+# In[25]:
 
 
 values = list(set([x for y in names_title_dict.values() for x in y]))
 data = {}
 for key in names_title_dict.keys():
     data[key] = [True if value in names_title_dict[key] else False for value in values]
- 
+
 boolean_table_name_cols = pd.DataFrame(data, index=values)
-pd.DataFrame(boolean_table_name_cols)
+# (pd.DataFrame(boolean_table_name_cols))
+boolean_table_name_cols
 
 
-# In[ ]:
+# In[26]:
 
 
 # https://stackoverflow.com/questions/41964618/boolean-matrix-form-pythons-dict-of-lists
 values = list(set([x for y in same_title_dict.values() for x in y]))
 data = {}
 for key in same_title_dict.keys():
-    data[key] = [ True if value in same_title_dict[key] else False for value in values ]
- 
+    data[key] = [ True if value in same_title_dict[key] else False for value in values]
+
 boolean_table_title_cols = pd.DataFrame(data, index=values)
 pd.DataFrame(boolean_table_title_cols)
 
 
-# In[ ]:
+# In[27]:
 
 
 fig, ax = plt.subplots(figsize=(11, 9))
@@ -287,15 +288,15 @@ sb.heatmap(boolean_table_title_cols)
 plt.show()
 
 
-# In[ ]:
+# In[30]:
 
 
 fig, ax = plt.subplots(figsize=(45, 25))
-sb.heatmap(boolean_table_name_cols)
-plt.show()
+full_heatmap = sb.heatmap(boolean_table_name_cols)
+plt.savefig('full_heatmap.png')
 
 
-# In[ ]:
+# In[60]:
 
 
 # ATTEMPT AT A NETWORK NODE GRAPH
@@ -375,7 +376,7 @@ for actor in names_title_dict:
 #     plt.show()
 
 
-# In[ ]:
+# In[29]:
 
 
 data = {}
@@ -402,7 +403,7 @@ for actor in names_title_dict:
 # print(data)
 
 
-# In[ ]:
+# In[30]:
 
 
 # table = pd.DataFrame(data['Kate McKinnon']).set_index(0)
@@ -413,7 +414,7 @@ for actor in names_title_dict:
 # wiki_cast.index
 
 
-# In[ ]:
+# In[31]:
 
 
 def create_table(i):
@@ -425,9 +426,10 @@ def create_table(i):
 table = create_table(1)
 
 
-# In[ ]:
+# In[32]:
 
 
+wiki_cast = wiki_cast[::-1]
 def on_selection(change):
     if (change['owner'].selected) is not None and len(change['owner'].selected)==1: # only allow user to select one grid
             i = change['owner'].selected[0]
@@ -440,13 +442,13 @@ def on_selection(change):
 #how to ignore if NoneType selected?
 
 
-# In[ ]:
+# In[33]:
 
 
 myLabel = ipywidgets.Label()
 
 
-# In[ ]:
+# In[34]:
 
 
 ####### BAR PLOT ######
@@ -485,13 +487,13 @@ fig_bars.layout.width = '550px'
 fig_bars
 
 
-# In[ ]:
+# In[35]:
 
 
 table.values.astype(int)
 
 
-# In[ ]:
+# In[36]:
 
 
 ##GRID HEAT MAP##
@@ -502,7 +504,7 @@ x_sc = bqplot.OrdinalScale()
 y_sc = bqplot.OrdinalScale()
 
 # 3. axis
-col_ax = bqplot.ColorAxis(scale=col_sc, orientation='vertical', side='right', label = 'Color Scale')
+col_ax = bqplot.ColorAxis(scale=col_sc, orientation='horizontal', side='top', label = 'Color Scale')
 x_ax = bqplot.Axis(scale=x_sc, label='Title IDs',tick_rotate=-90, tick_style ={'font-size':'8px'},  label_offset ='50px')
 y_ax = bqplot.Axis(scale=y_sc, orientation='vertical', label='Actors',tick_offset = '50px',tick_style ={'font-size':'8px'}, label_offset ='50px')
 
@@ -516,7 +518,7 @@ fig.layout.height = '1700px'
 fig.layout.width = '550px'
 
 
-# In[ ]:
+# In[37]:
 
 
 Label_bar = ipywidgets.VBox([myLabel,fig_bars])
@@ -526,24 +528,40 @@ myDashboard
 
 # My dashboard is used to see the frequency of collaboration amongst SNL cast members. The left part of the graph is a bar chart, representing the length of tenure at SNL. When a user clicks on a cast member's bar, the heat map on the right gets updated. At the moment, the order is inconsistent between the two portions of the graph. This iteration of the heat map is more of a representation of the overlap between IMDb 'Known For Titles,' which are the group of four or five top titles on an actor's (or director, producer, etc.) resume/page. I've also opted not to include the titles since they are currently just IMDb unique title IDs and wouldn't mean anything to a viewer. I am in the process of compiling the complete list of titles for every SNL cast member by scraping their wikipedia filmography tables (the file in which I do that is included in the zipped submission file). The next iteration of my dashboard will hopefully include these complete lists for each actor. I also plan to include a hover interaction feature for the heat map where a label will be updated to show the comparative actor's name in addition to the project that each box represents. In the current iteration, the row which is filled in completely filled in green represents the row of the actor whose bar was just selected.
 
-# In[ ]:
+# In[38]:
 
 
 import wiki_scrape
 
 
-# In[ ]:
+# In[39]:
 
 
-from collections import OrderedDict
+wiki_cast.index
 
-SNL_Cast_Members_Full_Titles_dict = wiki_scrape.Final_dict
+
+# In[40]:
+
+
+order = list(wiki_cast.index)
+SNL_Cast_Members_Full_Titles_dict = sorted((wiki_scrape.Final_dict).items(), key=lambda pair: order.index(pair[0]))
+SNL_Cast_Members_Full_Titles_dict2 = {}
+for i in SNL_Cast_Members_Full_Titles_dict:
+    SNL_Cast_Members_Full_Titles_dict2[i[0]]=i[1]
+
+SNL_Cast_Members_Full_Titles_dict2
+SNL_Cast_Members_Full_Titles_dict = SNL_Cast_Members_Full_Titles_dict2
+
+
+# In[41]:
+
+
 for i in SNL_Cast_Members_Full_Titles_dict.items():
     if 'Saturday Night Live' not in i[1]:
         i[1].append('Saturday Night Live')
 
 
-# In[ ]:
+# In[42]:
 
 
 same_title_dict = {}
@@ -575,7 +593,7 @@ for title in same_title_dict:
 same_title_dict
 
 
-# In[ ]:
+# In[43]:
 
 
 values = list(set([x for y in SNL_Cast_Members_Full_Titles_dict.values() for x in y]))
@@ -587,11 +605,10 @@ boolean_table_name_cols = pd.DataFrame(data, index=values)
 pd.DataFrame(boolean_table_name_cols)
 
 
-# In[ ]:
+# In[44]:
 
 
 for actor in SNL_Cast_Members_Full_Titles_dict:
-    fig, ax = plt.subplots(figsize=(11, 9))
     # https://stackoverflow.com/questions/41964618/boolean-matrix-form-pythons-dict-of-lists
     values = SNL_Cast_Members_Full_Titles_dict[actor]
     print(actor,values)
@@ -611,7 +628,7 @@ for actor in SNL_Cast_Members_Full_Titles_dict:
 #     plt.show()
 
 
-# In[ ]:
+# In[45]:
 
 
 data = {}
@@ -635,12 +652,12 @@ for actor in SNL_Cast_Members_Full_Titles_dict:
         t_or_f.insert(0,key)
         actor_dict_2d.append(t_or_f)
     data[actor] = actor_dict_2d
-    
+print(data)    
 pd.DataFrame(data['Fred Armisen'])
 # print(data)
 
 
-# In[ ]:
+# In[46]:
 
 
 def create_table(i):
@@ -649,12 +666,20 @@ def create_table(i):
     table.columns = header
     table = pd.DataFrame(table[1:], columns=header)
     return table
-table = create_table(1)
+table = create_table(0)
+table
 
 
-# In[ ]:
+# In[47]:
 
 
+myLabel = ipywidgets.Label()
+
+
+# In[48]:
+
+
+wiki_cast = wiki_cast[::-1]
 def on_selection(change):
     if (change['owner'].selected) is not None and len(change['owner'].selected)==1: # only allow user to select one grid
             i = change['owner'].selected[0]
@@ -662,18 +687,12 @@ def on_selection(change):
             myLabel.value = wiki_cast.iloc[i].name + ': ' + str(wiki_cast.iloc[i]['No. of seasons']) + ' seasons on SNL'
             table = create_table(i)
             heat_map.color = table.values.astype('float')
-            heat_map.row = table.index.values.astype(str),
+            heat_map.row = table.index.values.astype(str)
             heat_map.column = table.columns.values.astype(str)
 #how to ignore if NoneType selected?
 
 
-# In[ ]:
-
-
-myLabel = ipywidgets.Label()
-
-
-# In[ ]:
+# In[49]:
 
 
 ####### BAR PLOT ######
@@ -712,31 +731,18 @@ fig_bars.layout.width = '500px'
 fig_bars
 
 
-# In[ ]:
+# In[50]:
 
 
 table.values.astype(int)
 
 
-# In[ ]:
-
-
-def get_data_value(change):
-    #print(change['owner'].selected) # so we have IDs, but we want to print state names
-    if change['owner'].selected is not None:
-        for i,s in enumerate(change['owner'].selected): # over all selected states
-            print(state_names[s == ids])
-        
-heat_map.observe(get_data_value,'selected')
-
-
-# In[ ]:
+# In[51]:
 
 
 ##GRID HEAT MAP##
-
 # 2. scales
-col_sc = bqplot.OrdinalColorScale(scheme="Pastel1")
+col_sc = bqplot.OrdinalColorScale(scheme = "Set2")
 x_sc = bqplot.OrdinalScale()
 y_sc = bqplot.OrdinalScale()
 
@@ -756,27 +762,31 @@ heat_map = bqplot.GridHeatMap(color = table.values.astype('float'),
                              tooltip=def_tt)
 
 
-# 4 interactions
+# 5 interactions
 heat_map.interactions = {'hover': 'tooltip'}
 fig = bqplot.Figure(marks=[heat_map], axes=[col_ax,x_ax, y_ax])
 fig.layout.height = '1700px'
 fig.layout.width = '550px'
 
 
-# In[ ]:
+# In[52]:
 
 
 Label_bar = ipywidgets.VBox([myLabel,fig_bars])
-myDashboard = ipywidgets.HBox([Label_bar,fig])
-myDashboard
+myDashboard_final = ipywidgets.HBox([Label_bar,fig])
+myDashboard_final
 
 
 # In[ ]:
 
 
-tt = bqplot.Tooltip(fields=['name', 'x', 'y'], 
-                    labels=['Country Name', 
-                            'Income per Capita', 'Life Expectancy'])
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
